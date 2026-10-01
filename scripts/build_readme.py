@@ -155,7 +155,7 @@ def activity_card(c, user, now):
     cell, gap = 14, 3.6
     gx, gy = 52, 172
     h = gy + 7 * (cell + gap) + 64
-    s = Svg(c, w, h, f"{cal['totalContributions']} public contributions in the last year: "
+    s = Svg(c, w, h, f"{cal['totalContributions']} contributions in the last year: "
                      f"{cc['totalCommitContributions']} commits, {cc['totalPullRequestContributions']} pull requests, "
                      f"{cc['totalPullRequestReviewContributions']} reviews. Longest streak {best} days.")
     panel(s, 0, 0, w, h, 10)
@@ -220,7 +220,7 @@ def lang_palette(c):
 def languages_card(c, user):
     langs = languages(user)
     w, h = 1000, 176
-    s = Svg(c, w, h, "Languages across public repos: " + ", ".join(f"{n} {p*100:.0f}%" for n, p in langs))
+    s = Svg(c, w, h, "Languages across every repo I work on: " + ", ".join(f"{n} {p*100:.0f}%" for n, p in langs))
     panel(s, 0, 0, w, h, 10)
     section_label(s, 24, 34, "02", "languages · every repo I work on, public + private")
     bx, by, bw, bh = 24, 56, w - 48, 14
@@ -298,7 +298,7 @@ def pic(name, alt, width="100%"):
 def readme():
     return f"""{pic("activity", "Contribution activity over the last 12 months")}
 
-{pic("languages", "Languages across public repositories")}
+{pic("languages", "Languages across every repo I work on")}
 """
 
 
