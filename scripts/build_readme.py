@@ -38,6 +38,15 @@ NOW = [
     ("looking for", "part-time / async", "backend or applied-AI roles · UTC-3"),
 ]
 
+LANDING = {
+    "dark": dict(THEMES["dark"], bg="#12141C", panel="#1A1D27", panel2="#1F2330", line="#2A2E3A", line2="#353A49",
+                 text="#E4E6EB", muted="#8B8FA3", faint="#565B6C", acc="#E8A33D", acc_ink="#191307",
+                 teal="#6EE7B7", teal_bg="#1B2B27", acc_bg="#2A2316", pipes="#353A49"),
+    "light": dict(THEMES["light"], bg="#F6F4EF", panel="#FFFFFF", panel2="#F1EEE7", line="#E2DED4", line2="#D3CEC2",
+                  text="#1A1C24", muted="#5F6373", faint="#9A9DA8", acc="#B8740F", acc_ink="#FFFFFF",
+                  teal="#0E8F63", teal_bg="#E3F3EC", acc_bg="#F6EBD9", pipes="#D3CEC2"),
+}
+
 QUERY = """query{ viewer{
   login createdAt followers{totalCount}
   repositories(ownerAffiliations:[OWNER, ORGANIZATION_MEMBER, COLLABORATOR], first:100, orderBy:{field:PUSHED_AT, direction:DESC}){
@@ -323,6 +332,10 @@ def main():
         for name, body in files.items():
             (OUT / f"{name}-{theme}.svg").write_text(body, encoding="utf-8")
             count += 1
+    # same card in the landing page palette (masega360.github.io loads these)
+    for theme, c in LANDING.items():
+        (OUT / f"activity-landing-{theme}.svg").write_text(activity_card(c, user, now), encoding="utf-8")
+        count += 1
     (ROOT / "README.md").write_text(readme(), encoding="utf-8")
     print(f"wrote {count} svgs + README.md")
 
