@@ -1,0 +1,41 @@
+name: Refresh profile cards
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"          # every 6 hours
+  workflow_dispatch:                # manual button in the Actions tab
+  repository_dispatch:
+    types: [refresh-profile]        # other repos can ping this after a push
+  push:
+    paths: ["scripts/**"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: profile-cards
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r scripts/requirements.txt
+      - name: Build cards from the GitHub API
+        run: python scripts/build_readme.py
+        env:
+          # Personal token = private repos, org repos and private contributions are counted.
+          # Without it the workflow falls back to GITHUB_TOKEN (public data only).
+          PROFILE_TOKEN: ${{ secrets.PROFILE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit if anything changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add README.md assets
+          git diff --cached --quiet || git commit -m "Refresh profile cards"
+          git push
