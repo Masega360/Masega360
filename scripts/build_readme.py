@@ -304,6 +304,11 @@ def readme():
 
 def main():
     cached = "--cached" in sys.argv
+    if os.environ.get("GITHUB_ACTIONS") and not os.environ.get("PROFILE_TOKEN"):
+        # The default Actions token can't see private repos or private contributions;
+        # keep the committed cards instead of overwriting them with partial data.
+        print("::warning::PROFILE_TOKEN secret not set — keeping the current cards.")
+        return
     user = load(cached)
     now = dt.datetime.now(dt.timezone.utc)
     by_name = {r["name"]: r for r in user["repositories"]["nodes"]}
